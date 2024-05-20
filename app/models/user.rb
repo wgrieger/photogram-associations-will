@@ -50,20 +50,20 @@ class User < ApplicationRecord
   #Indirect associations
 
   # User#liked_photos: returns rows from the photos table associated to this user through its likes
-  has_many(:liked_photos, through: :users, source: :likes)
+  has_many(:liked_photos, through: :likes, source: :photos)
 
   # User#commented_photos: returns rows from the photos table associated to this user through its comments
-   has_many(:commented_photos, through: :comments, source: :photo_id)
+   has_many(:commented_photos, through: :comments, source: :photos)
 
-  ### Indirect associations built on scoped associations
+        ### Indirect associations built on scoped associations
 
-  # User#followers: returns rows from the users table associated to this user through its accepted_received_follow_requests (the follow requests' senders)
+        # User#followers: returns rows from the users table associated to this user through its accepted_received_follow_requests (the follow requests' senders)
 
-  # User#leaders: returns rows from the users table associated to this user through its accepted_sent_follow_requests (the follow requests' recipients)
+        # User#leaders: returns rows from the users table associated to this user through its accepted_sent_follow_requests (the follow requests' recipients)
 
-  # User#feed: returns rows from the photos table associated to this user through its leaders (the leaders' own_photos)
+        # User#feed: returns rows from the photos table associated to this user through its leaders (the leaders' own_photos)
 
-  # User#discover: returns rows from the photos table associated to this user through its leaders (the leaders' liked_photos)
+        # User#discover: returns rows from the photos table associated to this user through its leaders (the leaders' liked_photos)
 
   #def comments
    # my_id = self.id
@@ -73,73 +73,73 @@ class User < ApplicationRecord
   #end
 
  # def own_photos
-    my_id = self.id
+   # my_id = self.id
 
-    matching_photos = Photo.where({ :owner_id => my_id })
+    #matching_photos = Photo.where({ :owner_id => my_id })
 
-    return matching_photos
-  end
+    #eturn matching_photos
+ # end
 
-  def likes
-    my_id = self.id
+  #def likes
+   # my_id = self.id
 
-    matching_likes = Like.where({ :fan_id => my_id })
+    #matching_likes = Like.where({ :fan_id => my_id })
 
-    return matching_likes
-  end
+    #return matching_likes
+  #end
 
-  def liked_photos
-    my_likes = self.likes
+ # def liked_photos
+  #  my_likes = self.likes
     
-    array_of_photo_ids = Array.new
+   # array_of_photo_ids = Array.new
 
-    my_likes.each do |a_like|
-      array_of_photo_ids.push(a_like.photo_id)
-    end
+    #my_likes.each do |a_like|
+     # array_of_photo_ids.push(a_like.photo_id)
+    #end
 
-    matching_photos = Photo.where({ :id => array_of_photo_ids })
+    #matching_photos = Photo.where({ :id => array_of_photo_ids })
 
-    return matching_photos
-  end
+    #return matching_photos
+  #end
 
-  def commented_photos
-    my_comments = self.comments
+  #def commented_photos
+   # my_comments = self.comments
     
-    array_of_photo_ids = Array.new
+    #array_of_photo_ids = Array.new
 
-    my_comments.each do |a_comment|
-      array_of_photo_ids.push(a_comment.photo_id)
-    end
+   # my_comments.each do |a_comment|
+    #  array_of_photo_ids.push(a_comment.photo_id)
+    #end
 
-    matching_photos = Photo.where({ :id => array_of_photo_ids })
+   # matching_photos = Photo.where({ :id => array_of_photo_ids })
 
-    unique_matching_photos = matching_photos.distinct
+   # unique_matching_photos = matching_photos.distinct
 
-    return unique_matching_photos
-  end
+   # return unique_matching_photos
+  #end
 
-  def sent_follow_requests
-    my_id = self.id
+ #def sent_follow_requests
+ #   my_id = self.id
 
-    matching_follow_requests = FollowRequest.where({ :sender_id => my_id })
+ #   matching_follow_requests = FollowRequest.where({ :sender_id => my_id })
 
-    return matching_follow_requests
-  end
+  #  return matching_follow_requests
+ # end
 
-  def received_follow_requests
-    my_id = self.id
+ # def received_follow_requests
+ #   my_id = self.id
 
-    matching_follow_requests = FollowRequest.where({ :recipient_id => my_id })
+ #   matching_follow_requests = FollowRequest.where({ :recipient_id => my_id })
 
-    return matching_follow_requests
-  end
+ #   return matching_follow_requests
+ # end
 
   def accepted_sent_follow_requests
-    my_sent_follow_requests = self.sent_follow_requests
+   my_sent_follow_requests = self.sent_follow_requests
 
     matching_follow_requests = my_sent_follow_requests.where({ :status => "accepted" })
 
-    return matching_follow_requests
+  return matching_follow_requests
   end
 
   def accepted_received_follow_requests
