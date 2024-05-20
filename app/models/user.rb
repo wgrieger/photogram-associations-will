@@ -17,24 +17,32 @@ class User < ApplicationRecord
     :uniqueness => { :case_sensitive => false },
   })
 
+
   # Association accessor methods to define:
   
   ## Direct associations
 
   # User#comments: returns rows from the comments table associated to this user by the author_id column
 
+    has_many(:comments)
+
   # User#own_photos: returns rows from the photos table  associated to this user by the owner_id column
 
+    has_many(:photos)
+
   # User#likes: returns rows from the likes table associated to this user by the fan_id column
+    has_many(:likes)
 
   # User#sent_follow_requests: returns rows from the follow requests table associated to this user by the sender_id column
+    has_many(:sent_follow_requests, class_name:"follow_requests", foreign_key: "sender_id")
 
   # User#received_follow_requests: returns rows from the follow requests table associated to this user by the recipient_id column
-
+    has_many(:recieved_follow_requests, class_name:"follow_requests", foreign_key: "recipient_id")
 
   ### Scoped direct associations
 
   # User#accepted_sent_follow_requests: returns rows from the follow requests table associated to this user by the sender_id column, where status is 'accepted'
+    has_many(:accepted_sent_follow_requests, class_name:"follow_requests", foreign_key:"recipient_id")
 
   # User#accepted_received_follow_requests: returns rows from the follow requests table associated to this user by the recipient_id column, where status is 'accepted'
 
@@ -56,13 +64,12 @@ class User < ApplicationRecord
 
   # User#discover: returns rows from the photos table associated to this user through its leaders (the leaders' liked_photos)
 
-  def comments
-    my_id = self.id
+  #def comments
+   # my_id = self.id
 
-    matching_comments = Comment.where({ :author_id => my_id })
-
-    return matching_comments
-  end
+   # matching_comments = Comment.where({ :author_id => my_id })
+# return matching_comments
+  #end
 
   def own_photos
     my_id = self.id
