@@ -21,10 +21,10 @@ class Like < ApplicationRecord
   ## Direct associations
 
   # Like#fan: returns a row from the users table associated to this like by the fan_id column
-  belongs_to(:fan, class_name: "users", foreign_key: "fan_id")
+  belongs_to(:fan, class_name: "User", foreign_key: "fan_id")
 
   # Like#photo: returns a row from the photo table associated to this like by the photo_id column
-  belongs_to(:photo, class_name:"photos", foreign_key:"photo_id")
+  belongs_to(:photo, class_name:"Photo", foreign_key:"photo_id")
 
  # def fan
   #  my_fan_id = self.fan_id

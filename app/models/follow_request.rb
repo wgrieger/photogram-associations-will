@@ -22,11 +22,11 @@ class FollowRequest < ApplicationRecord
   ## Direct associations
 
   # FollowRequest#sender: returns a row from the users table associated to this follow request by the sender_id column
-has_many(:senders, class_name: "Users", foreign_key: "sender_id")
+    belongs_to(:sender, class_name: "User", foreign_key: "sender_id")
 
   # FollowRequest#recipient: returns a row from the users table associated to this follow request by the recipient_id column
 
-  has_many(:recipients, class_name: "Users", foreign_key: "receipient_id")
+  belongs_to(:recipient, class_name: "User", foreign_key: "recipient_id")
 
  # def sender
  #   my_sender_id = self.sender_id

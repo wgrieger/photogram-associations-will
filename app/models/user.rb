@@ -24,26 +24,26 @@ class User < ApplicationRecord
 
   # User#comments: returns rows from the comments table associated to this user by the author_id column
 
-    has_many(:comments)
+    has_many(:comments, class_name:"Comment", foreign_key:"author_id")
 
   # User#own_photos: returns rows from the photos table  associated to this user by the owner_id column
 
-    has_many(:photos)
+    has_many(:own_photos, class_name:"Photo", foreign_key:"owner_id")
 
   # User#likes: returns rows from the likes table associated to this user by the fan_id column
     has_many(:likes)
 
   # User#sent_follow_requests: returns rows from the follow requests table associated to this user by the sender_id column
-    has_many(:sent_follow_requests, class_name:"follow_requests", foreign_key: "sender_id")
+    has_many(:sent_follow_requests, class_name:"FollowRequest", foreign_key: "sender_id")
 
   # User#received_follow_requests: returns rows from the follow requests table associated to this user by the recipient_id column
-    has_many(:recieved_follow_requests, class_name:"follow_requests", foreign_key: "recipient_id")
+    has_many(:recieved_follow_requests, class_name:"FollowRequest", foreign_key: "recipient_id")
 
         ### Scoped direct associations
 
 
         # User#accepted_sent_follow_requests: returns rows from the follow requests table associated to this user by the sender_id column, where status is 'accepted'
-          #has_many(:accepted_sent_follow_requests, class_name:"follow_requests", foreign_key:"recipient_id")
+          #has_many(:accepted_sent_follow_requests, class_name:"FollowRequest", foreign_key:"recipient_id")
 
         # User#accepted_received_follow_requests: returns rows from the follow requests table associated to this user by the recipient_id column, where status is 'accepted'
 
@@ -134,62 +134,62 @@ class User < ApplicationRecord
  #   return matching_follow_requests
  # end
 
-  def accepted_sent_follow_requests
-   my_sent_follow_requests = self.sent_follow_requests
+          def accepted_sent_follow_requests
+          my_sent_follow_requests = self.sent_follow_requests
 
-    matching_follow_requests = my_sent_follow_requests.where({ :status => "accepted" })
+            matching_follow_requests = my_sent_follow_requests.where({ :status => "accepted" })
 
-  return matching_follow_requests
-  end
+          return matching_follow_requests
+          end
 
-  def accepted_received_follow_requests
-    my_received_follow_requests = self.received_follow_requests
+          def accepted_received_follow_requests
+            my_received_follow_requests = self.received_follow_requests
 
-    matching_follow_requests = my_received_follow_requests.where({ :status => "accepted" })
+            matching_follow_requests = my_received_follow_requests.where({ :status => "accepted" })
 
-    return matching_follow_requests
-  end
+            return matching_follow_requests
+          end
 
-  def followers
-    my_accepted_received_follow_requests = self.accepted_received_follow_requests
-    
-    array_of_user_ids = Array.new
+          def followers
+            my_accepted_received_follow_requests = self.accepted_received_follow_requests
+            
+            array_of_user_ids = Array.new
 
-    my_accepted_received_follow_requests.each do |a_follow_request|
-      array_of_user_ids.push(a_follow_request.sender_id)
-    end
+            my_accepted_received_follow_requests.each do |a_follow_request|
+              array_of_user_ids.push(a_follow_request.sender_id)
+            end
 
-    matching_users = User.where({ :id => array_of_user_ids })
+            matching_users = User.where({ :id => array_of_user_ids })
 
-    return matching_users
-  end
+            return matching_users
+          end
 
-  def leaders
-    my_accepted_sent_follow_requests = self.accepted_sent_follow_requests
-    
-    array_of_user_ids = Array.new
+          def leaders
+            my_accepted_sent_follow_requests = self.accepted_sent_follow_requests
+            
+            array_of_user_ids = Array.new
 
-    my_accepted_sent_follow_requests.each do |a_follow_request|
-      array_of_user_ids.push(a_follow_request.recipient_id)
-    end
+            my_accepted_sent_follow_requests.each do |a_follow_request|
+              array_of_user_ids.push(a_follow_request.recipient_id)
+            end
 
-    matching_users = User.where({ :id => array_of_user_ids })
+            matching_users = User.where({ :id => array_of_user_ids })
 
-    return matching_users
-  end
+            return matching_users
+          end
 
-  def feed
-    array_of_photo_ids = Array.new
+        def feed
+          array_of_photo_ids = Array.new
 
-    my_leaders = self.leaders
-    
-    my_leaders.each do |a_user|
-      leader_own_photos = a_user.own_photos
+          my_leaders = self.leaders
+          
+          my_leaders.each do |a_user|
+            leader_own_photos = a_user.own_photos
 
-      leader_own_photos.each do |a_photo|
-        array_of_photo_ids.push(a_photo.id)
-      end
-    end
+            leader_own_photos.each do |a_photo|
+              array_of_photo_ids.push(a_photo.id)
+            end
+          end
 
     matching_photos = Photo.where({ :id => array_of_photo_ids })
 
