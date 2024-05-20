@@ -39,20 +39,21 @@ class User < ApplicationRecord
   # User#received_follow_requests: returns rows from the follow requests table associated to this user by the recipient_id column
     has_many(:recieved_follow_requests, class_name:"follow_requests", foreign_key: "recipient_id")
 
-  ### Scoped direct associations
-
-  # User#accepted_sent_follow_requests: returns rows from the follow requests table associated to this user by the sender_id column, where status is 'accepted'
-    has_many(:accepted_sent_follow_requests, class_name:"follow_requests", foreign_key:"recipient_id")
-
-  # User#accepted_received_follow_requests: returns rows from the follow requests table associated to this user by the recipient_id column, where status is 'accepted'
+        ### Scoped direct associations
 
 
-  ## Indirect associations
+        # User#accepted_sent_follow_requests: returns rows from the follow requests table associated to this user by the sender_id column, where status is 'accepted'
+          #has_many(:accepted_sent_follow_requests, class_name:"follow_requests", foreign_key:"recipient_id")
+
+        # User#accepted_received_follow_requests: returns rows from the follow requests table associated to this user by the recipient_id column, where status is 'accepted'
+
+  #Indirect associations
 
   # User#liked_photos: returns rows from the photos table associated to this user through its likes
+  has_many(:liked_photos, through: :users, source: :likes)
 
   # User#commented_photos: returns rows from the photos table associated to this user through its comments
-
+   has_many(:commented_photos, through: :comments, source: :photo_id)
 
   ### Indirect associations built on scoped associations
 
@@ -71,7 +72,7 @@ class User < ApplicationRecord
 # return matching_comments
   #end
 
-  def own_photos
+ # def own_photos
     my_id = self.id
 
     matching_photos = Photo.where({ :owner_id => my_id })
